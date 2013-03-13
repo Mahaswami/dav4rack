@@ -183,7 +183,7 @@ module DAV4Rack
     # Write to this resource from given IO.
     def write(io)
       tempfile = "#{file_path}.#{Process.pid}.#{object_id}"
-      open(tempfile, "wb") do |file|
+      open(tempfile, "w+b") do |file|
         while part = io.read(8192)
           file << part
         end
@@ -223,6 +223,7 @@ module DAV4Rack
     end
 
     def lock(args)
+      return [nil, nil]
       unless(parent_exists?)
         Conflict
       else
@@ -255,6 +256,7 @@ module DAV4Rack
     end
 
     def unlock(token)
+      return NoContent
       token = token.slice(1, token.length - 2)
       if(token.nil? || token.empty?)
         BadRequest
